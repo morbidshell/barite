@@ -10,7 +10,7 @@ RUN set -euxo pipefail; \
     dnf -y install dnf5-plugins; \
     curl -fsSL -o "/etc/yum.repos.d/isv:BrowserWorks.repo" \
         "https://download.opensuse.org/repositories/isv:/BrowserWorks/Fedora_${FEDORA_VERSION}/isv:BrowserWorks.repo"; \
-    dnf -y install waterfox
+    dnf -y install waterfox unity-gtk2-module libdbusmenu
 
 #OpenSnitch (GitHub release RPMs: daemon + Qt6 GUI) ─────────────────────
 # "latest" is resolved via the /releases/latest redirect (no API rate limits).
