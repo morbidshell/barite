@@ -22,7 +22,7 @@ RUN set -euxo pipefail; \
     dnf -y install dnf5-plugins; \
     curl -fsSL -o "/etc/yum.repos.d/isv:BrowserWorks.repo" \
         "https://download.opensuse.org/repositories/isv:/BrowserWorks/Fedora_${FEDORA_VERSION}/isv:BrowserWorks.repo"; \
-    dnf -y install waterfox grpc grpc-plugins python3-grpcio unity-gtk2-module libdbusmenu; \
+    dnf -y install waterfox unity-gtk2-module libdbusmenu; \
     echo "==> OpenSnitch"; \
     ver="${OPENSNITCH_VERSION}"; \
     if [ "${ver}" = latest ]; then \
@@ -33,7 +33,7 @@ RUN set -euxo pipefail; \
     curl -fsSL -o /tmp/opensnitch.rpm    "${base}/opensnitch-${ver}-1.x86_64.rpm"; \
     curl -fsSL -o /tmp/opensnitch-ui.rpm "${base}/opensnitch-ui-${ver}-1.noarch.rpm"; \
     dnf -y install --setopt=tsflags=noscripts /tmp/opensnitch.rpm; \
-    dnf -y install /tmp/opensnitch-ui.rpm; \
+    dnf -y install /tmp/opensnitch-ui.rpm grpc grpc-plugins python3-grpcio-tools python3-grpcio python3-slugify python3-inotify python3-protobuf; \
     rm -f /tmp/opensnitch.rpm /tmp/opensnitch-ui.rpm; \
     echo "==> Windscribe"; \
     ver="${WINDSCRIBE_VERSION}"; \
