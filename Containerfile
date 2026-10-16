@@ -1,7 +1,16 @@
 FROM ghcr.io/ublue-os/bazzite:stable
 
+ARG FEDORA_VERSION=44
+ARG FEDORA_VERSION
 ARG OPENSNITCH_VERSION=latest
 ARG WINDSCRIBE_VERSION=latest
+
+# Waterfox
+RUN set -euxo pipefail; \
+    dnf -y install dnf5-plugins; \
+    curl -fsSL -o "/etc/yum.repos.d/isv:BrowserWorks.repo" \
+        "https://download.opensuse.org/repositories/isv:/BrowserWorks/Fedora_${FEDORA_VERSION}/isv:BrowserWorks.repo"; \
+    dnf -y install waterfox
 
 #OpenSnitch (GitHub release RPMs: daemon + Qt6 GUI) ─────────────────────
 # "latest" is resolved via the /releases/latest redirect (no API rate limits).
@@ -25,10 +34,12 @@ RUN set -euxo pipefail; \
     rm -f /tmp/opensnitch.rpm /tmp/opensnitch-ui.rpm; \
     test -e /usr/lib/systemd/system/opensnitch.service
 
+
 #Windscribe (GitHub release RPM, signature-checked) ─────────────────────
 # The RPM installs to /opt/windscribe. On Fedora bootc images /opt is a symlink to
 # /var/opt, and /var is not carried across image updates, so the payload is moved
 # to /usr/lib/opt and linked back at boot with tmpfiles.d.
+
 RUN set -euxo pipefail; \
     ver="${WINDSCRIBE_VERSION}"; \
     if [ "${ver}" = latest ]; then \
