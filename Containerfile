@@ -20,10 +20,7 @@ RUN set -euxo pipefail; \
     if [ -L /opt ]; then mkdir -p /var/opt; fi; \
     echo "==> Waterfox"; \
     dnf -y install dnf5-plugins; \
-    curl -fsSL -o "/etc/yum.repos.d/isv:BrowserWorks.repo" \
-        "https://download.opensuse.org/repositories/isv:/BrowserWorks/Fedora_${FEDORA_VERSION}/isv:BrowserWorks.repo"; \
-    dnf -y copr enable ruizhi-lab/latte-dock-ng; \
-    dnf -y install latte-dock-ng waterfox unity-gtk2-module kio-admin libdbusmenu; \
+    dnf -y install unity-gtk2-module kio-admin libdbusmenu; \
     echo "==> OpenSnitch"; \
     ver="${OPENSNITCH_VERSION}"; \
     if [ "${ver}" = latest ]; then \
