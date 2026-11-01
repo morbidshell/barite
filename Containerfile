@@ -20,7 +20,9 @@ RUN set -euxo pipefail; \
     if [ -L /opt ]; then mkdir -p /var/opt; fi; \
     echo "==> Waterfox"; \
     dnf -y install dnf5-plugins; \
-    dnf -y install unity-gtk2-module kio-admin libdbusmenu; \
+    curl -fsSL -o "/etc/yum.repos.d/isv:BrowserWorks.repo" \
+        "https://download.opensuse.org/repositories/isv:/BrowserWorks/Fedora_${FEDORA_VERSION}/isv:BrowserWorks.repo"; \
+    dnf -y install waterfox unity-gtk2-module kio-admin libdbusmenu; \
     echo "==> OpenSnitch"; \
     ver="${OPENSNITCH_VERSION}"; \
     if [ "${ver}" = latest ]; then \
