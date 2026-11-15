@@ -31,7 +31,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
         "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${FEDORA_VERSION}.noarch.rpm" \
         "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"; \
     dnf -y install rpmfusion-free-release-tainted; \
-    for copr in vertigo-red/bottles scottames/ghostty bieszczaders/kernel-cachyos-lto; do \
+    for copr in vertigo-red/bottles bieszczaders/kernel-cachyos-lto; do \
         dnf -y copr enable "${copr}"; \
     done
 
@@ -58,7 +58,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     set -euxo pipefail; \
     dnf -y install \
         @kde-desktop xdg-desktop-portal-kde xdg-desktop-portal-gtk \
-        steam lutris bottles ghostty mesa-libGLU.x86_64 mesa-libGLU.i686 \
+        steam lutris bottles mesa-libGLU.x86_64 mesa-libGLU.i686 \
         pipewire pipewire-pulseaudio pipewire-alsa wireplumber \
         NetworkManager-wifi bluez power-profiles-daemon upower polkit \
         pam-kwallet xdg-user-dirs xdg-utils \
