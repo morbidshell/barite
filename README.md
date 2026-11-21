@@ -12,7 +12,6 @@ x86_64 only.
 | KDE Plasma (`@kde-desktop`: Plasma, KWin, Dolphin, Konsole, Plasma Login Manager, KWallet), lutris | Fedora repos |
 | steam, ffmpeg, codecs, libdvdcss | RPM Fusion (free, nonfree, free-tainted) |
 | bottles | COPR `vertigo-red/bottles` |
-| ghostty | COPR `scottames/ghostty` |
 | kernel-cachyos-lto, -devel-matched | COPR `bieszczaders/kernel-cachyos-lto` |
 | waterfox | `isv:BrowserWorks` repo (download.opensuse.org) |
 | opensnitch + opensnitch-ui | GitHub release RPMs, fetched by `scripts/fetch-rpms.sh` (latest, or `OPENSNITCH_VERSION=1.8.0`) |
@@ -27,7 +26,7 @@ sudo podman build --pull=newer -t fedora-kde-bootc .
 ```
 
 Or push this repo to GitHub: `.github/workflows/build.yml` builds on every push and daily,
-and publishes to `ghcr.io/morbidshell/scrollos:latest`.
+and publishes to `ghcr.io/morbidshell/barite:latest`.
 
 ## Install
 
