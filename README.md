@@ -33,7 +33,7 @@ and publishes to `ghcr.io/morbidshell/barite:latest`.
 From an existing Fedora bootc / Atomic system:
 
 ```
-sudo bootc switch ghcr.io/morbidshell/scrollos:latest && sudo systemctl reboot
+sudo bootc switch ghcr.io/morbidshell/barite:latest && sudo systemctl reboot
 ```
 
 For a fresh install, make a disk image or ISO with `bootc-image-builder` and a `config.toml`
