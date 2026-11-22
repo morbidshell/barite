@@ -2,14 +2,14 @@
 Warning: Built with heavy AI help.
 
 Personal Fedora bootc image: KDE Plasma (Wayland) with Plasma Login Manager, CachyOS LTO kernel,
-RPM Fusion + codecs, Steam, Lutris, Bottles, Ghostty, OpenSnitch, Windscribe and Waterfox.
+RPM Fusion + codecs, Steam, Lutris, Bottles, OpenSnitch, Windscribe and Waterfox.
 x86_64 only.
 
 ## What comes from where
 
 | Piece | Source |
 |---|---|
-| KDE Plasma (`@kde-desktop`: Plasma, KWin, Dolphin, Konsole, Plasma Login Manager, KWallet), lutris | Fedora repos |
+| KDE Plasma (individual packages, no Discover: Plasma, KWin, Dolphin, Konsole, Plasma Login Manager, KWallet), lutris | Fedora repos |
 | steam, ffmpeg, codecs, libdvdcss | RPM Fusion (free, nonfree, free-tainted) |
 | bottles | COPR `vertigo-red/bottles` |
 | kernel-cachyos-lto, -devel-matched | COPR `bieszczaders/kernel-cachyos-lto` |
@@ -58,17 +58,21 @@ groups = ["wheel"]
   `touch /etc/plasma-setup-done` line from the Containerfile.
 - **Wayland only:** recent Plasma (6.8) no longer ships an X11 session. X11 apps run through
   XWayland.
+- **No Discover:** Plasma is installed package by package, without `plasma-discover`, which
+  cannot update an image-based system. Update Flatpaks with `flatpak update` and the system with
+  `bootc upgrade`.
 - **Global Menu:** a brand-new Plasma profile gets a thin top panel with the Global Menu
   widget (KDE's own "Application Menu Bar" layout template, loaded by step 8a of the
   Containerfile). A profile that already exists keeps its panels; add it by hand with
   right-click on the desktop, Enter Edit Mode, the drop-down next to Add Panel, Application
   Menu Bar. It works for Qt/KDE apps (Dolphin, Kate, Konsole...). GTK apps cannot export their
   menus on Plasma Wayland ([KDE bug 424485](https://bugs.kde.org/show_bug.cgi?id=424485)), so
-  `appmenu-gtk-module` is deliberately not installed: it cannot help here and has been reported
-  to make GTK3 apps lose their menu bar. Firefox itself gained a native option (Firefox 139+)
-  behind three `about:config` switches: `widget.gtk.global-menu.enabled`,
-  `widget.gtk.global-menu.wayland.enabled` and `widget.gtk.native-context-menus`. Whether
-  Waterfox's engine has it has not been checked.
+  native Wayland GTK apps stay out of it. `unity-gtk3-module` (Fedora's `appmenu-gtk3`) is
+  installed for GTK3 apps that run through XWayland; if a GTK3 app ever loses its menu bar,
+  remove that package, since it has been reported to hide menu bars on Wayland. Waterfox 6.7 is
+  the exception: its release notes say it enables the global menu bar on Linux desktops that
+  provide one, including on Wayland (not tested here). Firefox has a similar option behind
+  `about:config` switches.
 - **Secrets:** gnome-keyring is not installed. KWallet provides the Secret Service. Give the
   wallet the same password as your login so `pam-kwallet` unlocks it at login.
 - **OpenSnitch:** the daemon (`opensnitch.service`) is enabled; start the GUI with `opensnitch-ui`.

@@ -49,15 +49,26 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
 
 
 # 3. Desktop core + apps (big, keep this list stable; it holds most of the download).
-#    @kde-desktop is Fedora's basic Plasma group: Plasma, KWin, Dolphin, Konsole, Discover,
-#    Plasma Login Manager and Plasma Setup (the fuller @kde-desktop-environment would add
-#    the whole KDE apps suite and Kontact). It also brings the KDE portal and KWallet, which
-#    replaces gnome-keyring as the Secret Service; pam-kwallet (Fedora's name for the PAM
-#    module, not "kwallet-pam") is listed so the login-time unlock is explicit.
+#    Plasma is installed package by package, not through the @kde-desktop group, so that
+#    plasma-discover (it cannot update an image-based system) stays out. The list is the
+#    group's mandatory and default packages minus Discover, the Fedora repo/abrt helpers, the
+#    firewall GUI and the print manager (add plasma-print-manager for printing).
+#    --exclude also stops Discover coming back as a weak dependency; step 8a fails the build
+#    if it ever does. KWallet replaces gnome-keyring as the Secret Service; pam-kwallet
+#    (Fedora's name for the PAM module, not "kwallet-pam") unlocks it at login.
+#    unity-gtk3-module is Fedora's appmenu-gtk3 (see step 8a for what it can and cannot do).
 RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     set -euxo pipefail; \
-    dnf -y install \
-        @kde-desktop xdg-desktop-portal-kde xdg-desktop-portal-gtk \
+    dnf -y install --exclude='plasma-discover*' \
+        plasma-desktop plasma-workspace plasma-workspace-wallpapers kwin \
+        plasma-login-manager kcm-plasmalogin plasma-setup \
+        plasma-systemsettings kinfocenter kscreen kscreenlocker polkit-kde \
+        plasma-integration plasma-breeze kde-gtk-config qt6-qtwayland \
+        plasma-nm plasma-pa bluedevil plasma-disks plasma-thunderbolt \
+        plasma-vault plasma-systemmonitor plasma-drkonqi plasma-welcome \
+        kdeplasma-addons kmenuedit kio-extras dolphin konsole \
+        NetworkManager-config-connectivity-fedora xorg-x11-server-Xwayland \
+        unity-gtk3-module xdg-desktop-portal-kde xdg-desktop-portal-gtk \
         steam lutris bottles mesa-libGLU.x86_64 mesa-libGLU.i686 \
         pipewire pipewire-pulseaudio pipewire-alsa wireplumber \
         NetworkManager-wifi bluez power-profiles-daemon upower polkit \
@@ -156,8 +167,10 @@ COPY files/ /
 #      top panel that holds one (the "Application Menu Bar" under Add Panel), so the layout
 #      scripts that build a brand-new profile's panels are extended to load it. Profiles that
 #      already exist are not touched. Qt/KDE apps (Dolphin, Kate, Konsole...) then use it.
-#      appmenu-gtk-module is deliberately NOT installed: Plasma on Wayland cannot show GTK
-#      menus in the Global Menu, so it would only risk GTK3 apps losing their menu bar.
+#      GTK apps cannot export menus to it on Plasma Wayland (KDE bug 424485). unity-gtk3-module
+#      (Fedora's appmenu-gtk3) is installed on request, so only GTK3 apps running through
+#      XWayland can use it; on native Wayland GTK apps it has been reported to hide their menu
+#      bar instead. If a GTK3 app loses its menu bar, remove that package.
 #    - Plasma Setup, the first-boot wizard that creates a user account, runs before the login
 #      manager unless /etc/plasma-setup-done exists. Users here come from the installer
 #      config (or already exist after `bootc switch`), so it is marked done. Remove that
@@ -173,6 +186,9 @@ RUN set -euxo pipefail; \
         patched=$((patched + 1)); \
     done; \
     [ "${patched}" -gt 0 ] || { echo "no Plasma default layout script found to extend" >&2; exit 1; }; \
+    rpm -q plasma-desktop plasma-workspace kwin plasma-login-manager unity-gtk3-module; \
+    [ -z "$(rpm -qa 'plasma-discover*')" ] \
+        || { echo "plasma-discover was installed but must stay out: $(rpm -qa 'plasma-discover*')" >&2; exit 1; }; \
     touch /etc/plasma-setup-done
 
 # 8b. Services, cleanup, lint. Fedora 44's KDE uses Plasma Login Manager (plasmalogin),
