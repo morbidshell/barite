@@ -186,7 +186,7 @@ RUN set -euxo pipefail; \
         patched=$((patched + 1)); \
     done; \
     [ "${patched}" -gt 0 ] || { echo "no Plasma default layout script found to extend" >&2; exit 1; }; \
-    rpm -q plasma-desktop plasma-workspace kwin plasma-login-manager unity-gtk3-module; \
+    rpm -q plasma-desktop plasma-workspace kwin plasma-login-manager; \
     [ -z "$(rpm -qa 'plasma-discover*')" ] \
         || { echo "plasma-discover was installed but must stay out: $(rpm -qa 'plasma-discover*')" >&2; exit 1; }; \
     touch /etc/plasma-setup-done
