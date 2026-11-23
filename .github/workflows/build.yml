@@ -23,6 +23,14 @@ jobs:
       - name: Free disk space
         run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
 
+      # Building and then rechunking keeps the image in storage several times over. The
+      # runner's /mnt disk is far larger than its root disk, so podman's storage lives there.
+      - name: Put container storage on /mnt
+        run: |
+          sudo mkdir -p /mnt/containers /var/lib/containers
+          sudo mount --bind /mnt/containers /var/lib/containers
+          df -h / /mnt /var/lib/containers
+
       # The Containerfile does `COPY rpms/ /`, so this must run before the build.
       # OpenSnitch, Windscribe and umu-launcher RPMs come from the GitHub CLI (authenticated
       # API, the job's own token) because github.com's web endpoints kept answering 504.
@@ -46,9 +54,27 @@ jobs:
             sleep 30
           done
 
+      # Without this, every build makes brand-new layers (new timestamps), so every update
+      # downloads everything this Containerfile adds (about 4.4 GB). bootc-base-imagectl
+      # ships inside the image and re-splits it into reproducible layers that only change
+      # when the packages in them do. If it fails, the unchunked image is pushed instead.
+      - name: Rechunk
+        continue-on-error: true
+        run: |
+          df -h /var/lib/containers
+          sudo podman run --rm --privileged \
+            -v /var/lib/containers:/var/lib/containers \
+            "${IMAGE}:latest" \
+            /usr/libexec/bootc-base-imagectl rechunk "${IMAGE}:latest" "${IMAGE}:rechunked"
+
       - name: Push
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | sudo podman login ghcr.io -u "${{ github.actor }}" --password-stdin
+          if sudo podman image exists "${IMAGE}:rechunked"; then
+            sudo podman tag "${IMAGE}:rechunked" "${IMAGE}:latest"
+          else
+            echo "::warning::rechunk did not produce an image, pushing the unchunked build (large updates)"
+          fi
           sudo podman tag "${IMAGE}:latest" "${IMAGE}:$(date +%Y%m%d)"
           sudo podman push "${IMAGE}:latest"
           sudo podman push "${IMAGE}:$(date +%Y%m%d)"
