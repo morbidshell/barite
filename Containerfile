@@ -72,7 +72,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
         steam lutris bottles mesa-libGLU.x86_64 mesa-libGLU.i686 \
         pipewire pipewire-pulseaudio pipewire-alsa wireplumber \
         NetworkManager-wifi bluez power-profiles-daemon upower polkit \
-        pam-kwallet xdg-user-dirs xdg-utils flatpak-kcm \
+        pam-kwallet xdg-user-dirs xdg-utils \
         linux-firmware alsa-firmware alsa-sof-firmware dracut mesa-dri-drivers mesa-vulkan-drivers
 
 
@@ -82,7 +82,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
     dnf -y install \
         @fonts @hardware-support plymouth-system-theme \
         glibc-all-langpacks google-noto-sans-fonts google-noto-emoji-fonts \
-        adw-gtk3-theme qt5ct qt6ct kate peazip-gtk3 pavucontrol alsa-utils \
+        adw-gtk3-theme flatpak-kcm kate alsa-utils \
         distrobox podman flatpak wget
 
 
