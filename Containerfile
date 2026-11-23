@@ -83,7 +83,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
         @fonts @hardware-support plymouth-system-theme \
         glibc-all-langpacks google-noto-sans-fonts google-noto-emoji-fonts \
         adw-gtk3-theme flatpak-kcm kate alsa-utils \
-        distrobox podman flatpak wget
+        distrobox podman flatpak wget ark
 
 
 # 4b. Waterfox, from its official repo (isv:BrowserWorks on download.opensuse.org). The repo
