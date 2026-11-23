@@ -72,7 +72,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5,sharing=locked \
         steam lutris bottles mesa-libGLU.x86_64 mesa-libGLU.i686 \
         pipewire pipewire-pulseaudio pipewire-alsa wireplumber \
         NetworkManager-wifi bluez power-profiles-daemon upower polkit \
-        pam-kwallet xdg-user-dirs xdg-utils \
+        pam-kwallet xdg-user-dirs xdg-utils flatpak-kcm \
         linux-firmware alsa-firmware alsa-sof-firmware dracut mesa-dri-drivers mesa-vulkan-drivers
 
 
