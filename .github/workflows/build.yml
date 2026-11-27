@@ -7,8 +7,8 @@ on:
   schedule:
     - cron: "35 0 * * *"   # daily rebuild picks up package + OpenSnitch/Windscribe updates
       timezone: "Europe/Copenhagen"
-    - cron: "40 15 * * *"
-      timezone: "Europe/Copenhagen"
+#    - cron: "40 15 * * *"
+#      timezone: "Europe/Copenhagen"
   workflow_dispatch:
 
 permissions:
